@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const Razorpay = require("razorpay");
 const dotenv = require("dotenv");
 const crypto = require("crypto");
-
+// const { default: paymentLink } = require("razorpay/dist/types/paymentLink");
 const getData = async (req, res) => {
   try {
     const emplyeeData = await employeeModel.find();
@@ -151,13 +151,25 @@ const paymentCreateMethod = async  (req, res) => {
     key_secret: process.env.RAZORPAY_SECRET_KEY,
   });
   try {
-    const { amount, currency, orderId } = req.body;
+    const { amount, currency, orderId, email, contact } = req.body;
     const options = {
       amount:amount*100,
       currency,
       receipt:orderId
     }
     const createOrder  = await razorpay.orders.create(options);
+    const createPaymentLink = await razorpay.paymentLink.create({
+      amount:amount*100,
+      currency:currency || "INR",
+      customer:{
+        email:email,
+        contact:contact
+      },
+      description:"Backend Payment",
+      notify:{sms:true, email:true},
+      callback_url:"http://localhost:5000/payment/verify",
+      callback_method:"post",
+    })
 
     res.status(200).send({
       status:200,

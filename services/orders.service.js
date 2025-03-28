@@ -53,7 +53,7 @@ const postData = async (req, res) => {
 };
 const patchData = async (req, res) => {
   try {
-    const { id } = req.params;
+   const id = req.userId
     const updatedData = req.body;
 
     const updatedOrder = await orderModel.findByIdAndUpdate(
@@ -81,8 +81,8 @@ const patchData = async (req, res) => {
 
 const deleteData = async (req, res) => {
   try {
-    const { id } = req.params;
-    const updatedData = req.body;
+    const id = req.userId;
+    // const updatedData = req.body;
 
     await orderModel.findByIdAndDelete(id);
     res.send({

@@ -35,7 +35,7 @@ const postData = async (req,res)=>{
 }
 const patchData = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.userId
     const updatedData = req.body;
 
     const UpdatedCart = await cartModel.findByIdAndUpdate(
@@ -51,7 +51,7 @@ const patchData = async (req, res) => {
     res.send({
       status: 200,
       catagoryData: updatedData,
-      message: "Catagory updated succesfuly",
+      message: "Cart updated succesfuly",
     });
   } catch (e) {
     res.status(400).send({
@@ -63,7 +63,7 @@ const patchData = async (req, res) => {
 
 const deleteData = async (req, res) => {
   try {
-    const { id } = req.params;
+   const id = req.userId
     const updatedData = req.body;
 
     await cartModel.findByIdAndDelete(id);

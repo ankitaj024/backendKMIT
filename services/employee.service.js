@@ -4,11 +4,19 @@ const jwt = require("jsonwebtoken");
 const Razorpay = require("razorpay");
 const dotenv = require("dotenv");
 const crypto = require("crypto");
+const sendMail = require("./mail.service");
+const path = require('path')
 // const { default: paymentLink } = require("razorpay/dist/types/paymentLink");
 const getData = async (req, res) => {
   try {
     const emplyeeData = await employeeModel.find();
-    res.send(emplyeeData);
+    const updatedData = emplyeeData.map((employee)=>{
+      return {
+        ...employee.toObject(),
+        img: `http://localhost:5000/users/${employee.img}`,
+      }
+    })
+    res.send(updatedData);
   } catch (e) {
     res.status(400);
     res.send(e);
@@ -18,26 +26,32 @@ const getData = async (req, res) => {
 const postData = async (req, res) => {
   try {
     let data = req.body;
+
     if (data.password) {
       const salt = await bcrypt.genSalt(10);
       data.password = await bcrypt.hash(data.password, salt);
     }
+
     let createdEmployee = await employeeModel.create(data);
-    // console.log(data);
-    const object = {
+
+    const mailData = {
+      name: createdEmployee.name,
+      to: createdEmployee.email,
+      subject: "User Created",
+    };
+
+    sendMail(mailData);
+
+    res.status(201).send({
       status: 201,
       Employeedata: createdEmployee,
-      message: "Employee Created Succesfully",
-    };
-    res.send(object);
+      message: "Employee Created Successfully",
+    });
   } catch (error) {
-    res.status(400);
-    const errorObject = {
+    res.status(400).send({
       Status: 400,
       message: error.message,
-    };
-    // console.log(error.message)
-    res.send(errorObject);
+    });
   }
 };
 
@@ -135,9 +149,9 @@ const loginMethod = async (req, res) => {
         .send({ Status: 401, message: "Incorrect Password" });
     }
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role:user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "3h" }
     );
     res.status(202).send({ Status: 202, message: "Login Successfully", token });
   } catch (e) {
@@ -145,7 +159,7 @@ const loginMethod = async (req, res) => {
   }
 };
 
-const paymentCreateMethod = async  (req, res) => {
+const paymentCreateMethod = async (req, res) => {
   const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_SECRET_KEY,
@@ -153,54 +167,54 @@ const paymentCreateMethod = async  (req, res) => {
   try {
     const { amount, currency, orderId, email, contact } = req.body;
     const options = {
-      amount:amount*100,
+      amount: amount * 100,
       currency,
-      receipt:orderId
-    }
-    const createOrder  = await razorpay.orders.create(options);
+      receipt: orderId,
+    };
+    const createOrder = await razorpay.orders.create(options);
     const createPaymentLink = await razorpay.paymentLink.create({
-      amount:amount*100,
-      currency:currency || "INR",
-      customer:{
-        email:email,
-        contact:contact
+      amount: amount * 100,
+      currency: currency || "INR",
+      customer: {
+        email: email,
+        contact: contact,
       },
-      description:"Backend Payment",
-      notify:{sms:true, email:true},
-      callback_url:"http://localhost:5000/payment/verify",
-      callback_method:"post",
-    })
+      description: "Backend Payment",
+      notify: { sms: true, email: true },
+      callback_url: "http://localhost:5000/payment/verify",
+      callback_method: "post",
+    });
 
     res.status(200).send({
-      status:200,
-      orderId:orderId.id,
-      amount:orderId.amount,
-      currency:orderId.currency
-    })
-  } catch(error) {
+      status: 200,
+      orderId: orderId.id,
+      amount: orderId.amount,
+      currency: orderId.currency,
+    });
+  } catch (error) {
     res.status(500).send({
-      status:500,
-      message:error.message
-    })
+      status: 500,
+      message: error.message,
+    });
   }
 };
 
-const verifyPayment = async(req,res)=>{
-  try{
-    const {razorpayOrderId, razorpayPaymentId, razorpaySignature} = req.body;
+const verifyPayment = async (req, res) => {
+  try {
+    const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = req.body;
 
-    const generateSignature = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET_KEY).update(razorpayOrderId + "|"+ razorpayPaymentId).digest("hex");
+    const generateSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_SECRET_KEY)
+      .update(razorpayOrderId + "|" + razorpayPaymentId)
+      .digest("hex");
     if (generateSignature === razorpaySignature) {
       // Payment is verified
       res.status(200).send({ status: "success", message: "Payment verified" });
     } else {
       res.status(400).send({ status: "error", message: "Invalid signature" });
     }
-  }
-  catch(error){
-
-  }
-}
+  } catch (error) {}
+};
 
 module.exports = {
   getData,
@@ -210,5 +224,5 @@ module.exports = {
   searchMethod,
   loginMethod,
   paymentCreateMethod,
-  verifyPayment
+  verifyPayment,
 };

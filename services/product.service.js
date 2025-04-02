@@ -5,7 +5,13 @@ const catagoryModel = require("../models/catagories.model")
 const getData = async (req, res) => {
   try {
     const ProductData = await productModel.find();
-    res.status(200).send({status:20,Data:ProductData});
+    const updatedData = ProductData.map((product)=>{
+      return {
+        ...product.toObject(),
+        productImage: `http://localhost:5000/products/${product.productImage}`,
+      }
+    })
+    res.send({status:200,Data:updatedData});
   } catch (e) {
     res.status(400);
     res.send(e);

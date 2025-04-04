@@ -58,6 +58,15 @@ const employeeSchema = new mongoose.Schema(
       enum: ["admin", "manager", "user"],
       default: "user",
     },
+    isSubscribe:{
+      type:Boolean,
+      default:false,
+    },
+    customerId:{
+      type:String,
+    },
+    eventDate: Date,
+  googleCalendarEventId: String,
   },
   {
     timestamps: true,

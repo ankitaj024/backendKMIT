@@ -5,17 +5,20 @@ const Razorpay = require("razorpay");
 const dotenv = require("dotenv");
 const crypto = require("crypto");
 const sendMail = require("./mail.service");
-const path = require('path')
+const path = require("path");
+const Stripe = require("stripe");
+const createCalenderEvent = require("../utils /googleCalender");
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 // const { default: paymentLink } = require("razorpay/dist/types/paymentLink");
 const getData = async (req, res) => {
   try {
     const emplyeeData = await employeeModel.find();
-    const updatedData = emplyeeData.map((employee)=>{
+    const updatedData = emplyeeData.map((employee) => {
       return {
         ...employee.toObject(),
         img: `http://localhost:5000/users/${employee.img}`,
-      }
-    })
+      };
+    });
     res.send(updatedData);
   } catch (e) {
     res.status(400);
@@ -26,12 +29,15 @@ const getData = async (req, res) => {
 const postData = async (req, res) => {
   try {
     let data = req.body;
-
     if (data.password) {
       const salt = await bcrypt.genSalt(10);
       data.password = await bcrypt.hash(data.password, salt);
     }
-
+    const customer = await stripe.customers.create({
+      name: data.name,
+      email: data.email,
+    });
+    data.customerId = customer.id;
     let createdEmployee = await employeeModel.create(data);
 
     const mailData = {
@@ -39,8 +45,14 @@ const postData = async (req, res) => {
       to: createdEmployee.email,
       subject: "User Created",
     };
-
     sendMail(mailData);
+    let eventDetails = {
+      summary: "User Create",
+      description: `Name : ${createdEmployee.name} and Email : ${createdEmployee.email}`,
+      startDate: data.startDate, 
+      endDate: data.endDate,
+    };
+    await createCalenderEvent(eventDetails);
 
     res.status(201).send({
       status: 201,
@@ -149,7 +161,13 @@ const loginMethod = async (req, res) => {
         .send({ Status: 401, message: "Incorrect Password" });
     }
     const token = jwt.sign(
-      { id: user._id, email: user.email, role:user.role },
+      {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+        name: user.name,
+        customerId: user.customerId,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "3h" }
     );

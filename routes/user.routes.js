@@ -10,6 +10,8 @@ const mailController = require("../controller/mail.controller");
 const googleController = require("../controller/googleAuth.controller");
 const paymentController = require("../controller/paymentController");
 const subscribtionController = require("../controller/subscribation.controller");
+const webHookController = require("../controller/webHookController");
+const calenderController = require("../controller/calenderController");
 
 
 userRoute.use("/employee" , employeeController );
@@ -22,6 +24,8 @@ userRoute.use("/mail" , mailController );
 userRoute.use("/" , googleController );
 userRoute.use("/payment", paymentController)
 userRoute.use("/subscriptions", subscribtionController)
+userRoute.use("/stripe-hook-update", webHookController)
+userRoute.use("/google-calender", calenderController)
 
 
 

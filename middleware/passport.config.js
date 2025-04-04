@@ -14,6 +14,7 @@ passport.use(
             name:profile.displayName,
             email:profile.emails[0].value,
             picture:profile.photos[0].value,
+            accessToken
         };
 
         const token = jwt.sign(user, process.env.JWT_SECRET, {expiresIn:"3h"});

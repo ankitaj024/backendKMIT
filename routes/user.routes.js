@@ -12,7 +12,9 @@ const paymentController = require("../controller/paymentController");
 const subscribtionController = require("../controller/subscribation.controller");
 const webHookController = require("../controller/webHookController");
 const calenderController = require("../controller/calenderController");
-
+const smsController = require("../controller/sms.controller");
+const PushNotificationController = require("../controller/pushNotification.Controller");
+const orderStatusController = require("../controller/orderStatusController");
 
 userRoute.use("/employee" , employeeController );
 userRoute.use("/catagory" , catagoryController );
@@ -26,6 +28,12 @@ userRoute.use("/payment", paymentController)
 userRoute.use("/subscriptions", subscribtionController)
 userRoute.use("/stripe-hook-update", webHookController)
 userRoute.use("/google-calender", calenderController)
+userRoute.use("/sms", smsController)
+userRoute.use("/push-notification", PushNotificationController)
+userRoute.use("/order-status", orderStatusController)
+
+
+
 
 
 

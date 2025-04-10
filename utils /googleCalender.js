@@ -1,15 +1,14 @@
 const { google } = require("googleapis");
 
 const createCalenderEvent = async (eventDetails) => {
+  try{
   const oauthClient = new google.auth.OAuth2();
   oauthClient.setCredentials({ access_token: process.env.ACCESS_TOKEN });
 
   const calendar = google.calendar({ version: "v3", auth: oauthClient });
-
-
   const startDate = new Date(eventDetails.startDate);
   const endDate = new Date(eventDetails.endDate);     
-//   console.log("Parsed Start Date:", startDate); // 👈 log this
+//   console.log("Parsed Start Date:", startDate); //
 //   console.log("Parsed End Date:", endDate); 
   endDate.setDate(endDate.getDate() + 1);  
   const event = {
@@ -28,6 +27,10 @@ const createCalenderEvent = async (eventDetails) => {
     calendarId: "primary",
     resource: event,
   });
+}
+catch(error){
+  console.log(error.message)
+}
 };
 
 module.exports = createCalenderEvent;

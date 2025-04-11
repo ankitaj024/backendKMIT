@@ -2,13 +2,15 @@ const employeeModel = require("../models/employee.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Razorpay = require("razorpay");
-const dotenv = require("dotenv");
 const crypto = require("crypto");
 const sendMail = require("./mail.service");
-const path = require("path");
 const Stripe = require("stripe");
 const createCalenderEvent = require("../utils /googleCalender");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const csv = require("csvtojson");
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
 // const { default: paymentLink } = require("razorpay/dist/types/paymentLink");
 const getData = async (req, res) => {
   try {
@@ -23,6 +25,85 @@ const getData = async (req, res) => {
   } catch (e) {
     res.status(400);
     res.send(e);
+  }
+};
+
+const bulkCreateEmployeesFromCSV = async (req, res) => {
+  try {
+    const parentDir = path.resolve(__dirname, "..");
+    const uploadPath = path.join(parentDir, "uploads", "csv");
+
+    
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+
+    const storage = multer.diskStorage({
+      destination: function (req, file, cb) {
+        cb(null, uploadPath);
+      },
+      filename: function (req, file, cb) {
+        cb(null, Date.now() + "-" + file.originalname);
+      },
+    });
+
+    const upload = multer({
+      storage,
+      limits: { fileSize: 10 * 1024 * 1024 },
+    }).single("file");
+
+    
+    upload(req, res, async function (err) {
+      if (err) {
+        return res.status(400).json({ status: 400, message: err.message });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ status: 400, message: "No file uploaded" });
+      }
+
+      const filePath = req.file.path;
+      const jsonArray = await csv().fromFile(filePath);
+
+      const createdEmployees = [];
+      const failedEntries = [];
+
+      for (const data of jsonArray) {
+        try {
+          if (data.password) {
+            const salt = await bcrypt.genSalt(10);
+            data.password = await bcrypt.hash(data.password, salt);
+          }
+
+          const customer = await stripe.customers.create({
+            name: data.name,
+            email: data.email,
+          });
+
+          data.customerId = customer.id;
+
+          const createdEmployee = await employeeModel.create(data);
+          createdEmployees.push(createdEmployee);
+        } catch (err) {
+          failedEntries.push({
+            email: data.email,
+            reason: err.message,
+          });
+        }
+      }
+
+      res.status(201).json({
+        status: 201,
+        message: `${createdEmployees.length} employees created successfully.`,
+        created: createdEmployees,
+        failed: failedEntries,
+      });
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: error.message,
+    });
   }
 };
 
@@ -49,7 +130,7 @@ const postData = async (req, res) => {
     let eventDetails = {
       summary: "User Create",
       description: `Name : ${createdEmployee.name} and Email : ${createdEmployee.email}`,
-      startDate: data.startDate, 
+      startDate: data.startDate,
       endDate: data.endDate,
     };
     await createCalenderEvent(eventDetails);
@@ -243,4 +324,5 @@ module.exports = {
   loginMethod,
   paymentCreateMethod,
   verifyPayment,
+  bulkCreateEmployeesFromCSV,
 };

@@ -35,7 +35,7 @@ const verifyPassword = async (req, res) => {
     if (!user) {
       return res.status(404).send({ status: 404, message: "Invalid user" });
     }
-    if (user.otp === otp) {
+    if (user.otp == otp) {
       const salt = await bcrypt.genSalt(10);
       newPassword = await bcrypt.hash(newPassword, salt);
       await employeeModel.findOneAndUpdate(

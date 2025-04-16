@@ -14,6 +14,11 @@ const orderSchema = mongoose.Schema(
     status: {
       type: String,
       required: true,
+      default:"pending",
+    },
+    transactionId:{
+      type:String,
+      default:null
     },
     items:[
         {
@@ -29,6 +34,9 @@ const orderSchema = mongoose.Schema(
             price:{
                 type:Number,
                 static: true
+            },
+            name:{
+              type:String,
             }
         }
     ],

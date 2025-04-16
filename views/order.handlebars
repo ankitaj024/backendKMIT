@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Order Confirmation</title>
+  </head>
+  <body style="font-family: Arial, sans-serif; background-color: #f8f8f8;">
+    <div style="width: 1240px; margin: auto">
+      <table align="center" width="600" cellpadding="0" cellspacing="0" style="background: #fff; border-radius: 8px; text-align: center; padding: 20px;">
+        <tr>
+          <td style="background-color: pink; padding: 20px; font-size: 24px; font-weight: bold;">
+            ORDER CONFIRMATION
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 20px;">
+            <img src="cid:logo" alt="Company Logo" style="height: 70px; width: 50px; display: block; margin: 0 auto;" />
+            <h2 style="color: #333;">Thank You for Your Order!</h2>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 20px; text-align: left; color: #555; font-size: 16px;">
+            Hi {{name}},<br /><br />
+            We've received your order <strong>#{{orderId}}</strong>.<br /><br />
+
+            <strong>Order Summary:</strong><br /><br />
+
+            <table width="100%" cellpadding="10" cellspacing="0" style="border-collapse: collapse; text-align: left;">
+              <thead>
+                <tr style="background-color: #f2f2f2;">
+                  <th style="border: 1px solid #ddd;">Product Name</th>
+                  <th style="border: 1px solid #ddd;">Quantity</th>
+                  <th style="border: 1px solid #ddd;">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each items}}
+                  <tr>
+                    <td style="border: 1px solid #ddd;">{{name}}</td>
+                    <td style="border: 1px solid #ddd;">{{quantity}}</td>
+                    <td style="border: 1px solid #ddd;">₹{{price}}</td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+
+            <p style="margin-top: 15px;"><strong>Total:</strong> ₹{{totalPrice}}</p><br />
+
+            You’ll receive another email once it's shipped.<br /><br />
+            If you have any questions, feel free to contact our support team.
+          </td>
+        </tr>
+        <tr>
+          <td style="border-top: 1px solid #ddd; padding: 20px; text-align: center; font-size: 14px; color: #777;">
+            Regards,<br />
+            <strong>KMIT Team</strong>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

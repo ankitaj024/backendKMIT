@@ -1,0 +1,22 @@
+name,email,password,phoneNumber,address,gender,startDate,endDate
+Alice Johnson,alice1@example.com,Pass1234,9876543210,"123 Elm Street, NY",female,2025-04-11T10:00:00Z,2025-04-11T11:00:00Z
+Bob Smith,bob1@example.com,Secure456,9876543211,"456 Oak Avenue, LA",male,2025-04-12T10:00:00Z,2025-04-12T11:00:00Z
+Clara Lee,clara1@example.com,MyPass789,9876543212,"789 Pine Road, TX",female,2025-04-13T10:00:00Z,2025-04-13T11:00:00Z
+David Kim,david1@example.com,Pass9999,9876543213,"321 Cedar Blvd, CA",male,2025-04-14T10:00:00Z,2025-04-14T11:00:00Z
+Eva Green,eva1@example.com,Green123,9876543214,"654 Birch Lane, FL",female,2025-04-15T10:00:00Z,2025-04-15T11:00:00Z
+Frank Adams,frank1@example.com,Frank789,9876543215,"987 Maple Dr, WA",male,2025-04-16T10:00:00Z,2025-04-16T11:00:00Z
+Grace Liu,grace1@example.com,Grace456,9876543216,"852 Willow St, IL",female,2025-04-17T10:00:00Z,2025-04-17T11:00:00Z
+Harry Tan,harry1@example.com,Harry123,9876543217,"963 Cypress Rd, NV",male,2025-04-18T10:00:00Z,2025-04-18T11:00:00Z
+Ivy Brooks,ivy1@example.com,IVY9876,9876543218,"741 Palm Ave, GA",female,2025-04-19T10:00:00Z,2025-04-19T11:00:00Z
+Jack Hill,jack1@example.com,Jackpass,9876543219,"369 Oak Blvd, CO",male,2025-04-20T10:00:00Z,2025-04-20T11:00:00Z
+Kate Long,kate1@example.com,Kate999,9876543220,"123 Birch Ave, OR",female,2025-04-21T10:00:00Z,2025-04-21T11:00:00Z
+Leo Chan,leo1@example.com,Leo12345,9876543221,"456 Palm Blvd, TN",male,2025-04-22T10:00:00Z,2025-04-22T11:00:00Z
+Mona Park,mona1@example.com,Mona111,9876543222,"789 Spruce Rd, AZ",female,2025-04-23T10:00:00Z,2025-04-23T11:00:00Z
+Nathan Roy,nathan1@example.com,NatePass,9876543223,"321 Cherry St, NC",male,2025-04-24T10:00:00Z,2025-04-24T11:00:00Z
+Olivia May,olivia1@example.com,Olive888,9876543224,"654 Sequoia Ln, SC",female,2025-04-25T10:00:00Z,2025-04-25T11:00:00Z
+Paul King,paul1@example.com,King123,9876543225,"987 Redwood Ave, OH",male,2025-04-26T10:00:00Z,2025-04-26T11:00:00Z
+Queenie Zee,queenie1@example.com,Queen999,9876543226,"852 Magnolia Rd, MI",female,2025-04-27T10:00:00Z,2025-04-27T11:00:00Z
+Ray Dean,ray1@example.com,Ray88888,9876543227,"963 Beech Blvd, MN",male,2025-04-28T10:00:00Z,2025-04-28T11:00:00Z
+Sara Jain,sara1@example.com,SaraPass,9876543228,"741 Dogwood St, NJ",female,2025-04-29T10:00:00Z,2025-04-29T11:00:00Z
+Tom Wu,tom1@example.com,Tom321321,9876543229,"369 Walnut Rd, MA",male,2025-04-30T10:00:00Z,2025-04-30T11:00:00Z
+/home/keymouseit/Desktop/AssigmentBackend/uploads/csv/1744288877137-employees.csv

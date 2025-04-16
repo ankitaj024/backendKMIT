@@ -12,7 +12,7 @@ const authoriseRoles = require("../middleware/authorizeRoles");
 const ROLES = require("../middleware/roles");
 const verifyToken = require("../middleware/authMiddleware");
 
-productController.get("/", verifyToken, authoriseRoles(ROLES.ADMIN), getData);
+productController.get("/", getData);
 productController.post("/", verifyToken, authoriseRoles(ROLES.ADMIN), postData);
 productController.patch(
   "/:id",

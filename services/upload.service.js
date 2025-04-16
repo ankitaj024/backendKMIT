@@ -2,7 +2,8 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 
-const allowedFormates = ["image/jpg", "image/jpeg", "image/png"];
+const allowedFormates = ["image/jpg", "image/jpeg", "image/png", "text/csv",  "application/vnd.ms-excel",
+  "application/csv"];
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -10,6 +11,7 @@ const storage = multer.diskStorage({
     if (!name) {
       return cb(new Error("please Enter the name in the url"));
     }
+    
     const parentDir = path.resolve(__dirname, "..");
     // console.log(parentDir)
     const uploadPath = path.join(parentDir, "uploads", name);
@@ -23,12 +25,13 @@ const storage = multer.diskStorage({
   },
 });
 
-const fileSizeLimit = 1 * 1024 * 1024;
+const fileSizeLimit = 10 * 1024 * 1024;
 
 const fileFilter = (req, file, cb) => {
   if (allowedFormates.includes(file.mimetype)) {
     cb(null, true);
   } else {
+    
     cb(new Error("Please upload PNG, JPG, JPEG formate only"), false);
   }
 };
@@ -55,6 +58,7 @@ const uploadFiles = (req, res) => {
       });
     });
   } catch (error) {
+
     res.status(500).send({ status: 500, message: error.message });
   }
 };
